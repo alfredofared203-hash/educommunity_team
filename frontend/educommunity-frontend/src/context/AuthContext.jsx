@@ -12,7 +12,7 @@ const AuthProvider = ({ children }) => {
     }
     try {
       const res = await api.getMe();
-      setUser(res.user);
+      setUser({ ...res.user, role: res.user.role?.toLowerCase() });
     } catch (err) {
       console.error("Session validation failed:", err);
       tokenStore.clear();
@@ -29,8 +29,9 @@ const AuthProvider = ({ children }) => {
     try {
       const res = await api.login(credentials);
       tokenStore.set(res.accessToken, res.refreshToken);
-      setUser(res.user);
-      return res.user;
+      const user = { ...res.user, role: res.user.role?.toLowerCase() };
+      setUser(user);
+      return user;
     } finally {
       setLoading(false);
     }
@@ -40,8 +41,9 @@ const AuthProvider = ({ children }) => {
     try {
       const res = await api.register(userData);
       tokenStore.set(res.accessToken, res.refreshToken);
-      setUser(res.user);
-      return res.user;
+      const user = { ...res.user, role: res.user.role?.toLowerCase() };
+      setUser(user);
+      return user;
     } finally {
       setLoading(false);
     }
